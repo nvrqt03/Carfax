@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.carfax.models.Cars;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.LinearLayout;
 
@@ -68,6 +70,11 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
 
     @Override
     public void onCarClick(Cars.Example.Listing car) {
-
+        Intent intent = new Intent(this, CarDetailActivity.class);
+        intent.putExtra("carDetails", car);
+        intent.putExtra("dealerInfo", car.getDealer());
+        intent.putExtra("image", car.getImages().getFirstPhoto());
+        Log.d(TAG, "onCarClick: " + car.getExteriorColor() + car.getDealer().getCity());
+        startActivity(intent);
     }
 }

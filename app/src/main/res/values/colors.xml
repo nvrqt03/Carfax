@@ -11,4 +11,6 @@
 <!--    carfax colors-->
     <color name="carfax_blue">#3777BC</color>
     <color name="carfax_dark_blue">#2C5F96</color>
+    <color name="carfax_gray">#3C3C3C</color>
+    <color name="carfax_light_gray">#A4A4A4</color>
 </resources>

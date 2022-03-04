@@ -98,10 +98,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         TextView priceMiles;
         TextView cityState;
 
-        public ViewHolder(@NonNull View itemView, OnCarListener onCarListener) {
+        public ViewHolder(@NonNull View itemView, OnCarListener listener) {
             super(itemView);
-            this.onCarListener = onCarListener;
+            this.onCarListener = listener;
             image = itemView.findViewById(R.id.rv_carImage);
+            // do not forget to actually set the listener!
+            itemView.setOnClickListener(this);
             yearMakeModel = itemView.findViewById(R.id.year_make_model);
             priceMiles = itemView.findViewById(R.id.price_miles);
             cityState = itemView.findViewById(R.id.city_state);
