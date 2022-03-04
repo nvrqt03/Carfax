@@ -3,10 +3,16 @@ package com.example.carfax.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
 
 public class Cars {
 
@@ -103,9 +109,12 @@ public class Cars {
 
     }
 
-
+    @Entity(tableName = "example_table")
     public static class Example implements Parcelable {
 
+//        @PrimaryKey(autoGenerate = true)
+
+        @Ignore
         @SerializedName("searchArea")
         @Expose
         private SearchArea searchArea;
@@ -124,6 +133,7 @@ public class Cars {
         @SerializedName("dealerUsedCount")
         @Expose
         private Integer dealerUsedCount;
+        @PrimaryKey
         @SerializedName("page")
         @Expose
         private Integer page;
@@ -133,6 +143,7 @@ public class Cars {
         @SerializedName("totalPageCount")
         @Expose
         private Integer totalPageCount;
+        @Ignore
         @SerializedName("listings")
         @Expose
         private List<Listing> listings = null;
@@ -191,6 +202,8 @@ public class Cars {
                 return new Example[size];
             }
         };
+
+        public Example() {}
 
         public SearchArea getSearchArea() {
             return searchArea;
@@ -329,11 +342,16 @@ public class Cars {
             }
         }
 
+        @Entity(tableName = "Listing_table")
         public static class Listing implements Parcelable{
 
+            //@PrimaryKey(autoGenerate = true)
+            @Ignore
             @SerializedName("dealer")
             @Expose
             private Dealer dealer;
+            @PrimaryKey
+            @NonNull
             @SerializedName("id")
             @Expose
             private String id;
@@ -355,6 +373,7 @@ public class Cars {
             @SerializedName("subTrim")
             @Expose
             private String subTrim;
+            @Ignore
             @SerializedName("topOptions")
             @Expose
             private List<String> topOptions = null;
@@ -367,6 +386,7 @@ public class Cars {
             @SerializedName("currentPrice")
             @Expose
             private Double currentPrice;
+            @Ignore
             @SerializedName("monthlyPaymentEstimate")
             @Expose
             private Dealer.MonthlyPaymentEstimate monthlyPaymentEstimate;
@@ -424,6 +444,7 @@ public class Cars {
             @SerializedName("imageCount")
             @Expose
             private Integer imageCount;
+            @Ignore
             @SerializedName("images")
             @Expose
             private Images images;
@@ -451,6 +472,7 @@ public class Cars {
             @SerializedName("sentLead")
             @Expose
             private Boolean sentLead;
+            @Ignore
             @SerializedName("sentLeadAt")
             @Expose
             private Object sentLeadAt;
@@ -602,6 +624,8 @@ public class Cars {
                     return new Listing[size];
                 }
             };
+
+            public Listing() {}
 
             public Dealer getDealer() {
                 return dealer;
@@ -1122,8 +1146,11 @@ public class Cars {
                 parcel.writeByte((byte) (certified == null ? 0 : certified ? 1 : 2));
             }
 
+            @Entity(tableName = "dealer_table")
             public static class Dealer implements Parcelable {
 
+                @PrimaryKey
+                @NonNull
                 @SerializedName("carfaxId")
                 @Expose
                 private String carfaxId;
@@ -1216,6 +1243,8 @@ public class Cars {
                         return new Dealer[size];
                     }
                 };
+
+                public Dealer() {}
 
                 public String getCarfaxId() {
                     return carfaxId;
@@ -1467,20 +1496,27 @@ public class Cars {
                 }
             }
 
+            @Entity(tableName = "image_table")
             public static class Images implements Parcelable{
 
+                @PrimaryKey
                 @SerializedName("baseUrl")
                 @Expose
+                @NonNull
                 private String baseUrl;
+                @Ignore
                 @SerializedName("large")
                 @Expose
                 private List<String> large = null;
+                @Ignore
                 @SerializedName("medium")
                 @Expose
                 private List<String> medium = null;
+                @Ignore
                 @SerializedName("small")
                 @Expose
                 private List<String> small = null;
+                @Ignore
                 @SerializedName("firstPhoto")
                 @Expose
                 private FirstPhoto firstPhoto;
@@ -1503,6 +1539,8 @@ public class Cars {
                         return new Images[size];
                     }
                 };
+
+                public Images() {}
 
                 public String getBaseUrl() {
                     return baseUrl;
@@ -1557,13 +1595,18 @@ public class Cars {
                     parcel.writeStringList(small);
                 }
 
+                @Entity(tableName = "firstPhoto")
                 public static class FirstPhoto implements Parcelable {
+
+                    //
 
                     @SerializedName("small")
                     @Expose
                     private String small;
+                    @PrimaryKey
                     @SerializedName("large")
                     @Expose
+                    @NonNull
                     private String large;
                     @SerializedName("medium")
                     @Expose
@@ -1586,6 +1629,8 @@ public class Cars {
                             return new FirstPhoto[size];
                         }
                     };
+
+                    public FirstPhoto() {}
 
                     public String getSmall() {
                         return small;
