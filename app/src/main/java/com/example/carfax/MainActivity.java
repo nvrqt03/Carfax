@@ -1,6 +1,7 @@
 package com.example.carfax;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -27,17 +28,21 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
     private CarDao carDao;
     private CarDatabase carDatabase;
     private List<Cars.Example> offlineCarsList;
+    private CarViewModel carViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        carViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(CarViewModel.class);
+
         recyclerView = findViewById(R.id.car_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new CarAdapter(MainActivity.this, carsList, this);
+        adapter = new CarAdapter(MainActivity.this, carViewModel.getCarsList(), this);
+        adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT);
         recyclerView.setAdapter(adapter);
+
         carDatabase = CarDatabase.getInstance(getApplicationContext());
         getCars();
 
@@ -53,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
                 Cars.Example carData = response.body();
                 carsList = carData.getListings();
                 if (carsList != null) {
-                    adapter.setCars(carsList);
+                    //List<Cars.Example.Listing> viewModelCarList = carViewModel.setCarList(carsList);
+                    adapter.setCars(carViewModel.setCarList(carsList));
+                    adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
                 }
                 recyclerView.setAdapter(adapter);
                 storeOffline(carData);

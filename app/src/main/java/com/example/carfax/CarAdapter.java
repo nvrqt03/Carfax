@@ -67,7 +67,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         priceMiles.setText(priceMileage);
         cityState.setText(cityStateString);
 
-        String imageUrl = carListResults.getImages().getFirstPhoto().getLarge();
+        String imageUrl = carListResults.getImages().getFirstPhoto().getSmall();
 
         Glide.with(context).load(imageUrl).into(holder.image);
 //        Picasso.get()
@@ -87,6 +87,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     public void setCars(List<Cars.Example.Listing> carListings) {
         this.mCarList = carListings;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
