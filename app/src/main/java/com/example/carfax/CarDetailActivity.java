@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,12 +27,14 @@ public class CarDetailActivity extends AppCompatActivity {
     private Cars.Example.Listing.Dealer dealerInfo;
     private Cars.Example.Listing.Images.FirstPhoto imageInfo;
     private ImageView image;
+    private Button callDealer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_detail);
 
+        callDealer = findViewById(R.id.detail_call_dealer_button);
         image = findViewById(R.id.detail_carImage);
         Intent intent = getIntent();
 
@@ -49,6 +54,16 @@ public class CarDetailActivity extends AppCompatActivity {
         Glide.with(this).load(imageUrl).into(image);
 
         getCar(car, dealerInfo);
+
+        String dealerNumber = dealerInfo.getPhone();
+        callDealer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + dealerNumber));
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -86,6 +101,8 @@ public class CarDetailActivity extends AppCompatActivity {
         engine.setText(carDetails.getEngine());
         fuel.setText(carDetails.getFuel());
     }
+
+
 
     private void closeOnError() {
         finish();

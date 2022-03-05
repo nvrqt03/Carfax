@@ -1,9 +1,12 @@
 package com.example.carfax;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +51,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         TextView yearMakeModel = holder.yearMakeModel;
         TextView priceMiles = holder.priceMiles;
         TextView cityState = holder.cityState;
+        Button callDealer = holder.callDealer;
 
         String yearMakeModelString = carListResults.getYear() + " " + carListResults.getMake() + " " + carListResults.getModel();
 
@@ -62,6 +66,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         String newPrice = formatter.format(price);
         String priceMileage = "$  " + newPrice + "  |  " + mileage;
         String cityStateString = carListResults.getDealer().getCity() + ", " + carListResults.getDealer().getState();
+        String dealerNumber = carListResults.getDealer().getPhone();
 
         yearMakeModel.setText(yearMakeModelString);
         priceMiles.setText(priceMileage);
@@ -70,11 +75,15 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         String imageUrl = carListResults.getImages().getFirstPhoto().getSmall();
 
         Glide.with(context).load(imageUrl).into(holder.image);
-//        Picasso.get()
-//                .load(imageUrl)
-//                .into(holder.image);
-//        Picasso.get()
-//                .setLoggingEnabled(true);
+
+        callDealer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + dealerNumber));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -97,6 +106,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         TextView yearMakeModel;
         TextView priceMiles;
         TextView cityState;
+        Button callDealer;
 
         public ViewHolder(@NonNull View itemView, OnCarListener listener) {
             super(itemView);
@@ -107,6 +117,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             yearMakeModel = itemView.findViewById(R.id.year_make_model);
             priceMiles = itemView.findViewById(R.id.price_miles);
             cityState = itemView.findViewById(R.id.city_state);
+            callDealer = itemView.findViewById(R.id.rv_call_dealer_button);
         }
 
         @Override
