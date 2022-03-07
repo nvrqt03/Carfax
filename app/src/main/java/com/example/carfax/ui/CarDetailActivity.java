@@ -46,11 +46,6 @@ public class CarDetailActivity extends AppCompatActivity {
 
         }
 
-        if (car != null) {
-            Log.d(TAG, "onCreate: " + car.getModel() + dealerInfo.getCity() + imageInfo.getLarge());
-        }
-
-
         String imageUrl = imageInfo.getSmall();
         Glide.with(this).load(imageUrl).into(image);
 
@@ -103,10 +98,4 @@ public class CarDetailActivity extends AppCompatActivity {
         fuel.setText(carDetails.getFuel());
     }
 
-
-
-    private void closeOnError() {
-        finish();
-        Toast.makeText(this, "Data not available", Toast.LENGTH_SHORT).show();
-    }
 }

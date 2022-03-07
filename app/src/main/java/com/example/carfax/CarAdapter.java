@@ -76,6 +76,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
         Glide.with(context).load(imageUrl).into(holder.image);
 
+        // call dealer button listener and intent
         callDealer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

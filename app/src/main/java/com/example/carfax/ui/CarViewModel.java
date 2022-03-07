@@ -16,32 +16,20 @@ import java.util.List;
 
 public class CarViewModel extends AndroidViewModel {
 
-    public List<Cars.Example.Listing> carsList; //feel like we should update this to livedata
+    public List<Cars.Example.Listing> carsList;
 
-    public LiveData<List<Cars.Example.Listing.Dealer>> dealers;
-    public LiveData<List<Cars.Example.Listing>> allCars;
-    public LiveData<List<Cars.Example.Listing.Images>> images;
-    public LiveData<List<Cars.Example.Listing.Images.FirstPhoto>> photos;
-//    public LiveData<List<Cars.Example>> allCarList;
-    private CarDatabase carDatabase;
-    private CarDao carDao;
     private CarRepository carRepository;
 
     public CarViewModel(@NonNull Application application) {
         super(application);
         carRepository = new CarRepository(application);
-        //carDao = carDatabase.carDao();
         carsList = new ArrayList<>();
 
     }
-    //allCars = carDao.getCarListing();
-    //dealers = carDao.getDealerInfo();
-    //images = carDao.getImages();
-    //photos = carDao.getFirstPhotos();
+
 
     LiveData<List<Cars.Example.Listing>> getAllCars() {
         return carRepository.getAllCars();
-        //return allCars;
     }
 
     LiveData<List<Cars.Example.Listing.Dealer>> getDealers() {

@@ -11,7 +11,6 @@ import java.util.List;
 public class CarRepository {
     private CarDao carDao;
     private CarDatabase carDatabase;
-    private LiveData<List<Cars.Example.Listing>> carListings;
 
     public CarRepository(Application application) {
         carDatabase = CarDatabase.getInstance(application);

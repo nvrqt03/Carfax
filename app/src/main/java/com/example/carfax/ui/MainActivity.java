@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
         carDatabase = CarDatabase.getInstance(getApplicationContext());
         getCars();
 
+        // testing to make sure data did get resolved to the database. trying to figure out how to retrieve
+        // the data despite multiple tables.
         carViewModel.getAllCars().observe(this, new Observer<List<Cars.Example.Listing>>() {
             @Override
             public void onChanged(List<Cars.Example.Listing> listings) {
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
             @Override
             public void onResponse(Call<Cars.Example> call, Response<Cars.Example> response) {
                 Cars.Example carData = response.body();
-                // store response immediately to db
+                // store whole response to db
                 storeOffline(carData);
 
                 carsList = carData.getListings();
@@ -123,28 +125,20 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
 
     public void storeOffline(Cars.Example bulkCars) {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
-
             @Override
             public void run() {
                 carDatabase.carDao().insertCar(bulkCars);
-//                carDatabase.carDao().insertCarList(bulkCars.getListings());
-//                for (int i = 0; i < bulkCars.getListings().size(); i++) {
-//                    carDatabase.carDao().insertExampleData(bulkCars);
-//                    carDatabase.carDao().insertDealer(bulkCars.getListings().get(i).getDealer());
-//                    carDatabase.carDao().insertImageTable(bulkCars.getListings().get(i).getImages());
-//                    carDatabase.carDao().insertFirstPhoto(bulkCars.getListings().get(i).getImages().getFirstPhoto());
-//                }
             }
         });
     }
 
     @Override
     public void onCarClick(Cars.Example.Listing car) {
+        // send intent to CarDetailActivity
         Intent intent = new Intent(this, CarDetailActivity.class);
         intent.putExtra("carDetails", car);
         intent.putExtra("dealerInfo", car.getDealer());
         intent.putExtra("image", car.getImages().getFirstPhoto());
-        Log.d(TAG, "onCarClick: " + car.getExteriorColor() + car.getDealer().getCity());
         startActivity(intent);
     }
 
