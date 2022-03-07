@@ -112,7 +112,8 @@ public class Cars {
     @Entity(tableName = "example_table")
     public static class Example implements Parcelable {
 
-//        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey(autoGenerate = true)
+        public int id;
 
         @Ignore
         @SerializedName("searchArea")
@@ -133,7 +134,6 @@ public class Cars {
         @SerializedName("dealerUsedCount")
         @Expose
         private Integer dealerUsedCount;
-        @PrimaryKey
         @SerializedName("page")
         @Expose
         private Integer page;
@@ -345,7 +345,6 @@ public class Cars {
         @Entity(tableName = "Listing_table")
         public static class Listing implements Parcelable{
 
-            //@PrimaryKey(autoGenerate = true)
             @Ignore
             @SerializedName("dealer")
             @Expose
@@ -635,7 +634,9 @@ public class Cars {
                 this.dealer = dealer;
             }
 
+            @NonNull
             public String getId() {
+                if (this.id == null) return "no id";
                 return id;
             }
 
@@ -1149,7 +1150,9 @@ public class Cars {
             @Entity(tableName = "dealer_table")
             public static class Dealer implements Parcelable {
 
-                @PrimaryKey
+                @PrimaryKey(autoGenerate = true)
+                public int id;
+
                 @NonNull
                 @SerializedName("carfaxId")
                 @Expose
@@ -1499,7 +1502,9 @@ public class Cars {
             @Entity(tableName = "image_table")
             public static class Images implements Parcelable{
 
-                @PrimaryKey
+                @PrimaryKey(autoGenerate = true)
+                public int id;
+
                 @SerializedName("baseUrl")
                 @Expose
                 @NonNull
@@ -1598,12 +1603,12 @@ public class Cars {
                 @Entity(tableName = "firstPhoto")
                 public static class FirstPhoto implements Parcelable {
 
-                    //
+                    @PrimaryKey(autoGenerate = true)
+                    public int id;
 
                     @SerializedName("small")
                     @Expose
                     private String small;
-                    @PrimaryKey
                     @SerializedName("large")
                     @Expose
                     @NonNull

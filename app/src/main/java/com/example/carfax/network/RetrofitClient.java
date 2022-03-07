@@ -1,6 +1,8 @@
-package com.example.carfax;
+package com.example.carfax.network;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.carfax.Constants;
 
 import retrofit2.converter.gson.GsonConverterFactory;
 

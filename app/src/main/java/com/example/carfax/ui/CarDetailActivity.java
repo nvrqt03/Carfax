@@ -1,4 +1,4 @@
-package com.example.carfax;
+package com.example.carfax.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.carfax.R;
 import com.example.carfax.models.Cars;
 
 import org.w3c.dom.Text;

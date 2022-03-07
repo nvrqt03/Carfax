@@ -1,5 +1,8 @@
 package com.example.carfax;
 
+import static android.icu.text.MessagePattern.ArgType.SELECT;
+
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -12,17 +15,22 @@ import java.util.List;
 @Dao
 public interface CarDao {
 
-    @Query("SELECT * FROM example_table")
-    List<Cars.Example> getAllCars();
 
     @Query("SELECT * FROM listing_table")
-    List<Cars.Example.Listing> getCarListing();
+    LiveData<List<Cars.Example.Listing>> getCarListing();
 
     @Query("SELECT * FROM dealer_table")
-    List<Cars.Example.Listing.Dealer> getDealerInfo();
+    LiveData<List<Cars.Example.Listing.Dealer>> getDealerInfo();
 
     @Query("SELECT * FROM image_table")
-    List<Cars.Example.Listing.Images> getImages();
+    LiveData<List<Cars.Example.Listing.Images>> getImages();
+
+    @Query("SELECT * FROM firstPhoto")
+    LiveData<List<Cars.Example.Listing.Images.FirstPhoto>> getFirstPhotos();
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCar(Cars.Example cars);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
         void insertCarList(List<Cars.Example.Listing> carListings);

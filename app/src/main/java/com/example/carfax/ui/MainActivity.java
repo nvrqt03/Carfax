@@ -1,32 +1,28 @@
-package com.example.carfax;
+package com.example.carfax.ui;
 
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.carfax.network.AppExecutors;
+import com.example.carfax.CarAdapter;
+import com.example.carfax.CarDao;
+import com.example.carfax.CarDatabase;
+import com.example.carfax.network.CarfaxDataApi;
+import com.example.carfax.R;
+import com.example.carfax.network.RetrofitClient;
 import com.example.carfax.models.Cars;
 
 import java.util.List;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
     private CarDatabase carDatabase;
     private List<Cars.Example> offlineCarsList;
     private CarViewModel carViewModel;
-    private static final int REQUEST_CALL = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +56,41 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
         carDatabase = CarDatabase.getInstance(getApplicationContext());
         getCars();
 
+        carViewModel.getAllCars().observe(this, new Observer<List<Cars.Example.Listing>>() {
+            @Override
+            public void onChanged(List<Cars.Example.Listing> listings) {
+                for (int i = 0; i < listings.size(); i++) {
+                    Log.d(TAG, "onChanged: make " + listings.get(i).getMake());
+                }
+            }
+        });
+
+        carViewModel.getDealers().observe(this, new Observer<List<Cars.Example.Listing.Dealer>>() {
+            @Override
+            public void onChanged(List<Cars.Example.Listing.Dealer> dealers) {
+
+                for (int i = 0; i < dealers.size(); i++) {
+                    Log.d(TAG, "onChanged: dealers " + dealers.get(i).getName());
+                }
+            }
+        });
+        carViewModel.getImages().observe(this, new Observer<List<Cars.Example.Listing.Images>>() {
+            @Override
+            public void onChanged(List<Cars.Example.Listing.Images> images) {
+                for (int i = 0; i < images.size(); i++) {
+                    Log.d(TAG, "onChanged: images " + images.get(i).getBaseUrl());
+                }
+            }
+        });
+        carViewModel.getPhotos().observe(this, new Observer<List<Cars.Example.Listing.Images.FirstPhoto>>() {
+            @Override
+            public void onChanged(List<Cars.Example.Listing.Images.FirstPhoto> images) {
+                for (int i = 0; i < images.size(); i++) {
+                    Log.d(TAG, "onChanged: first photos " + images.get(i).getLarge());
+                }
+            }
+        });
+
     }
 
     public void getCars() {
@@ -70,14 +101,18 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
             @Override
             public void onResponse(Call<Cars.Example> call, Response<Cars.Example> response) {
                 Cars.Example carData = response.body();
+                // store response immediately to db
+                storeOffline(carData);
+
                 carsList = carData.getListings();
+                // to make offline, instead of carlist being set to viewModel adapter, we'd need
+                // to pull from the database instead of the network call.
                 if (carsList != null) {
-                    //List<Cars.Example.Listing> viewModelCarList = carViewModel.setCarList(carsList);
                     adapter.setCars(carViewModel.setCarList(carsList));
                     adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
                 }
                 recyclerView.setAdapter(adapter);
-                storeOffline(carData);
+
             }
             @Override
             public void onFailure(Call<Cars.Example> call, Throwable t) {
@@ -91,14 +126,14 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
 
             @Override
             public void run() {
-                carDatabase.carDao().insertCarList(bulkCars.getListings());
-                //carDatabase.carDao().insertDealer(carsList);
-                for (int i = 0; i < carsList.size(); i++) {
-                    carDatabase.carDao().insertExampleData(bulkCars);
-                    carDatabase.carDao().insertDealer(bulkCars.getListings().get(i).getDealer());
-                    carDatabase.carDao().insertImageTable(bulkCars.getListings().get(i).getImages());
-                    carDatabase.carDao().insertFirstPhoto(bulkCars.getListings().get(i).getImages().getFirstPhoto());
-                }
+                carDatabase.carDao().insertCar(bulkCars);
+//                carDatabase.carDao().insertCarList(bulkCars.getListings());
+//                for (int i = 0; i < bulkCars.getListings().size(); i++) {
+//                    carDatabase.carDao().insertExampleData(bulkCars);
+//                    carDatabase.carDao().insertDealer(bulkCars.getListings().get(i).getDealer());
+//                    carDatabase.carDao().insertImageTable(bulkCars.getListings().get(i).getImages());
+//                    carDatabase.carDao().insertFirstPhoto(bulkCars.getListings().get(i).getImages().getFirstPhoto());
+//                }
             }
         });
     }
@@ -112,27 +147,5 @@ public class MainActivity extends AppCompatActivity implements CarAdapter.OnCarL
         Log.d(TAG, "onCarClick: " + car.getExteriorColor() + car.getDealer().getCity());
         startActivity(intent);
     }
-//    private void callDealer(String number) {
-//        if (number.trim().length() > 0) {
-//            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-//            } else {
-//                String dial = "tel:" + number;
-//                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_CALL) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                callDealer();
-//            } else {
-//                Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
 
 }
